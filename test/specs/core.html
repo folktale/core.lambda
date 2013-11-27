@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="en"><head><title>test/specs/core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="test/specs/core"><meta name="groc-project-path" content="test/specs/core.ls"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">test/specs/core.ls</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="specification-for-the-core-functions">Specification for the core functions</h1></div></div></div><div class="segment"><div class="code folded"><div class="wrapper marker"><span class="c1">/** </span></div><div class="wrapper"><span class="cm">/** </span>
+<span class="cm"> * Copyright (c) 2013 Quildreen Motta</span>
+<span class="cm"> *</span>
+<span class="cm"> * Permission is hereby granted, free of charge, to any person</span>
+<span class="cm"> * obtaining a copy of this software and associated documentation files</span>
+<span class="cm"> * (the &quot;Software&quot;), to deal in the Software without restriction,</span>
+<span class="cm"> * including without limitation the rights to use, copy, modify, merge,</span>
+<span class="cm"> * publish, distribute, sublicense, and/or sell copies of the Software,</span>
+<span class="cm"> * and to permit persons to whom the Software is furnished to do so,</span>
+<span class="cm"> * subject to the following conditions:</span>
+<span class="cm"> *</span>
+<span class="cm"> * The above copyright notice and this permission notice shall be</span>
+<span class="cm"> * included in all copies or substantial portions of the Software.</span>
+<span class="cm"> *</span>
+<span class="cm"> * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,</span>
+<span class="cm"> * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF</span>
+<span class="cm"> * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND</span>
+<span class="cm"> * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE</span>
+<span class="cm"> * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION</span>
+<span class="cm"> * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION</span>
+<span class="cm"> * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</span>
+<span class="cm"> */</span>
+
+<span class="nv">spec                     = </span><span class="p">(</span><span class="nx">require</span> <span class="s">&#39;hifive&#39;</span><span class="p">)</span><span class="o">!</span>
+<span class="p">{</span><span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">,</span> <span class="nv">data: </span><span class="p">{</span> <span class="nx">Int</span> <span class="p">}}</span> <span class="o">=</span> <span class="nx">require</span> <span class="s">&#39;claire&#39;</span>
+<span class="err">λ</span>                        <span class="o">=</span> <span class="nx">require</span> <span class="s">&#39;../../src/&#39;</span>
+
+<span class="nv">module.exports = </span><span class="nx">spec</span> <span class="s">&#39;Core combinators&#39;</span> <span class="nf">(o, spec) -&gt;</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Identity: id a &lt;=&gt; a&#39;</span> <span class="nx">do</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a) -&gt;</span>
+       <span class="p">(</span><span class="err">λ</span><span class="p">.</span><span class="nx">identity</span> <span class="nx">a</span><span class="p">)</span> <span class="o">is</span> <span class="nx">a</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Constant: k a b &lt;=&gt; a&#39;</span> <span class="nx">do</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b) -&gt;</span>
+       <span class="p">(</span><span class="err">λ</span><span class="p">.</span><span class="nx">constant</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="o">is</span> <span class="nx">a</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Flip: flip f a b &lt;=&gt; f b a&#39;</span> <span class="nx">do</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b) -&gt;</span>
+       <span class="p">(</span><span class="err">λ</span><span class="p">.</span><span class="nx">flip</span> <span class="p">(</span><span class="o">-</span><span class="p">))(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="o">is</span> <span class="nx">b</span> <span class="o">-</span> <span class="nx">a</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!</span>
+
+  <span class="nx">spec</span> <span class="s">&#39;Compose&#39;</span> <span class="nf">(o) -&gt;</span>
+    <span class="nv">f = </span><span class="p">(</span><span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nv">g = </span><span class="p">(</span><span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nv">h = </span><span class="p">(</span><span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="nv">id = </span><span class="nf">(a) -&gt;</span> <span class="nx">a</span>
+
+    <span class="nx">o</span> <span class="s">&#39;Given `f: a → b` and `g: b → c`, then `(g . f): a → c`&#39;</span> <span class="nx">do</span>
+       <span class="k">for</span><span class="o">-</span><span class="nx">all</span> <span class="p">(</span><span class="nx">Int</span><span class="p">)</span> <span class="p">.</span><span class="nx">satisfy</span> <span class="nf">(a) -&gt;</span>
+         <span class="err">λ</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">g</span><span class="p">,</span> <span class="nx">f</span><span class="p">)(</span><span class="nx">a</span><span class="p">)</span> <span class="o">==</span> <span class="nx">g</span><span class="p">(</span><span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">))</span>
+       <span class="p">.</span><span class="nx">as-test</span><span class="o">!</span>
+
+    <span class="nx">o</span> <span class="s">&#39;associativity: `f . (g . h)` = `(f . g) . h`&#39;</span> <span class="nx">do</span>
+       <span class="k">for</span><span class="o">-</span><span class="nx">all</span> <span class="p">(</span><span class="nx">Int</span><span class="p">)</span> <span class="p">.</span><span class="nx">satisfy</span> <span class="nf">(a) -&gt;</span>
+         <span class="err">λ</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="err">λ</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">g</span><span class="p">,</span> <span class="nx">h</span><span class="p">))(</span><span class="nx">a</span><span class="p">)</span> <span class="o">==</span> <span class="err">λ</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="err">λ</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">g</span><span class="p">),</span> <span class="nx">h</span><span class="p">)(</span><span class="nx">a</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">as-test</span><span class="o">!</span>
+
+    <span class="nx">o</span> <span class="s">&#39;left identity: `id . f` = f`&#39;</span> <span class="nx">do</span>
+       <span class="k">for</span><span class="o">-</span><span class="nx">all</span> <span class="p">(</span><span class="nx">Int</span><span class="p">)</span> <span class="p">.</span><span class="nx">satisfy</span> <span class="nf">(a) -&gt;</span>
+         <span class="err">λ</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">f</span><span class="p">)(</span><span class="nx">a</span><span class="p">)</span> <span class="o">==</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">as-test</span><span class="o">!</span>
+
+    <span class="nx">o</span> <span class="s">&#39;right identity: `f . id` = f`&#39;</span> <span class="nx">do</span>
+       <span class="k">for</span><span class="o">-</span><span class="nx">all</span> <span class="p">(</span><span class="nx">Int</span><span class="p">)</span> <span class="p">.</span><span class="nx">satisfy</span> <span class="nf">(a) -&gt;</span>
+         <span class="err">λ</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">id</span><span class="p">)(</span><span class="nx">a</span><span class="p">)</span> <span class="o">==</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">as-test</span><span class="o">!</span>
+    
+  <span class="nx">o</span> <span class="s">&#39;Curry: curry f a b &lt;=&gt; f (a, b)&#39;</span> <span class="nf">-&gt;</span>
+     <span class="nv">f = </span><span class="nf">(a, b) -&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b) -&gt;</span>
+       <span class="err">λ</span><span class="p">.</span><span class="nx">curry</span><span class="p">(</span><span class="nx">f</span><span class="p">)(</span><span class="nx">a</span><span class="p">)(</span><span class="nx">b</span><span class="p">)</span> <span class="o">is</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Curry3: curry f a b c &lt;=&gt; f (a, b, c)&#39;</span> <span class="nf">-&gt;</span>
+     <span class="nv">f = </span><span class="nf">(a, b, c) -&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span> <span class="o">+</span> <span class="nx">c</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b, c) -&gt;</span>
+       <span class="err">λ</span><span class="p">.</span><span class="nx">curry3</span><span class="p">(</span><span class="nx">f</span><span class="p">)(</span><span class="nx">a</span><span class="p">)(</span><span class="nx">b</span><span class="p">)(</span><span class="nx">c</span><span class="p">)</span> <span class="o">is</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;CurryN: curry f a... &lt;=&gt; f [a]&#39;</span> <span class="nf">-&gt;</span>
+     <span class="nv">f = </span><span class="nf">(a, b, c, d, e) -&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span> <span class="o">+</span> <span class="nx">c</span> <span class="o">+</span> <span class="nx">d</span> <span class="o">+</span> <span class="nx">e</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b, c, d, e) -&gt;</span>
+       <span class="err">λ</span><span class="p">.</span><span class="nx">curryN</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nx">f</span><span class="p">)(</span><span class="nx">a</span><span class="p">)(</span><span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)(</span><span class="nx">d</span><span class="p">)(</span><span class="nx">e</span><span class="p">)</span> <span class="o">is</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Partial: (partial f a) b &lt;=&gt; f a b&#39;</span> <span class="nf">-&gt;</span>
+     <span class="nv">f = </span><span class="nf">(a, b) -&gt;</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b) -&gt;</span>
+       <span class="err">λ</span><span class="p">.</span><span class="nx">partial</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">a</span><span class="p">)(</span><span class="nx">b</span><span class="p">)</span> <span class="o">is</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Partial right: (partial-right f a) b &lt;=&gt; f b a&#39;</span> <span class="nf">-&gt;</span>
+     <span class="nv">f = </span><span class="nf">(a, b) -&gt;</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">given</span><span class="p">((</span><span class="o">!=</span><span class="p">)).</span><span class="nx">satisfy</span> <span class="nf">(a, b) -&gt;</span>
+       <span class="err">λ</span><span class="p">.</span><span class="nx">partial-right</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">a</span><span class="p">)(</span><span class="nx">b</span><span class="p">)</span> <span class="o">is</span> <span class="nx">f</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Uncurry: (uncurry f) [a, b] &lt;=&gt; f a b&#39;</span> <span class="nf">-&gt;</span>
+     <span class="nv">f = </span><span class="nf">(a, b) --&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b) -&gt;</span>
+       <span class="err">λ</span><span class="p">.</span><span class="nx">uncurry</span><span class="p">(</span><span class="nx">f</span><span class="p">)([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">])</span> <span class="o">is</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!!</span>
+
+  <span class="nx">o</span> <span class="s">&#39;Uncurry bind: (uncurry-bind f) [@a, b] &lt;=&gt; f.call a b&#39;</span> <span class="nf">-&gt;</span>
+     <span class="nv">f = </span><span class="nf">(a, b) --&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span> <span class="o">+</span> <span class="nx">@c</span>
+     <span class="k">for</span><span class="o">-</span><span class="nx">all</span><span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">Int</span><span class="p">).</span><span class="nx">satisfy</span> <span class="nf">(a, b, c) -&gt;</span>
+       <span class="err">λ</span><span class="p">.</span><span class="nx">uncurry-bind</span><span class="p">(</span><span class="nx">f</span><span class="p">)([{</span><span class="nx">c</span><span class="o">:</span><span class="nx">c</span><span class="p">},</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">])</span> <span class="o">is</span> <span class="nx">f</span><span class="p">.</span><span class="nx">call</span><span class="p">({</span><span class="nx">c</span><span class="o">:</span><span class="nx">c</span><span class="p">},</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">as-test</span><span class="o">!!</span>
+       
+       
+       
+           
+               </div></div></div></div></body></html>
