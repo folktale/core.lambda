@@ -1,4 +1,4 @@
-# # core.lambda
+# # Core combinators
 
 /** ^
  * Copyright (c) 2013 Quildreen Motta
@@ -23,4 +23,91 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-# Core combinators and higher-order functions
+
+# ## Function: identity
+#
+# The identity combinator.
+#  
+# + type: a -> a
+export identity = (a) -> a
+
+
+# ## Function: constant
+#
+# The constant combinator.
+#  
+# + type: a -> b -> a
+export constant = (a, b) --> a
+
+
+# ## Function: flip
+#
+# The flip combinator.
+#  
+# + type: (a -> b -> c) -> b -> a -> c
+export flip = (f, a, b) --> f b, a
+
+
+# ## Function: compose
+#
+# Function composition.
+#  
+# + type: (b -> c) -> (a -> b) -> a -> c
+export compose = (f, g, a) --> f (g a)
+
+
+# ## Function: curry
+#
+# Transforms a function on tuples to a curried function.
+#  
+# + type: ((a, b) -> c) -> a -> b -> c
+export curry = (f, a, b) --> f a, b
+
+# ## Function: curry3
+# + type: ((a, b, c) -> d) -> a -> b -> c -> d
+export curry3 = (f, a, b, c) --> f a, b, c
+
+# ## Function: curryN
+# + type: Number -> ((a1, a2, ..., aN) -> b) -> a1 -> a2 -> ... -> aN -> b
+export curryN = (n, f) -->
+  | n < 2  => f
+  | n is 2 => curry f
+  | n is 3 => curry3 f
+  | _      => [] |> curried = (as) -> (...bs) ->
+                                         cs = as ++ bs
+
+                                         if cs.length < n => curried cs
+                                         else             => f.apply this, cs
+                 
+
+# ## Function: partial
+#
+# Partially applies a function from the left.
+#  
+# + type: ((a1, a2, ..., aN, b1, b2, ..., bN) -> c) -> a1, a2, ..., aN -> b1, b2, ..., bN -> c
+export partial = (f, ...as) -> (...bs) -> f.apply this, (as ++ bs)
+
+
+# ## Function: partial-right
+#
+# Partially applies a function from the right.
+#  
+# + type: ((b1, b2, ..., bN, a1, a2, ..., aN) -> c) -> a1, a2, ..., aN -> b1, b2, ..., bN -> c
+export partial-right = (f, ...as) -> (...bs) -> f.apply this, (bs ++ as)
+
+
+# ## Function: uncurry
+#
+# Transforms a curried function to a function on tuples.
+#  
+# + type: (a1 -> a2 -> ... -> aN -> b) -> ((a1, a2, ..., aN) -> b)
+export uncurry = (f) -> (args) -> f.apply this, args
+
+
+# ## Function: uncurry-bind
+#
+# Transforms a curried function to a function on tuples,
+# with an explicit `this` parameter.
+#
+# + type: (c:Object) => (a1 -> a2 -> ... -> aN -> b) -> ((c, a1, a2, ..., aN) -> b)
+export uncurry-bind = (f) -> (args) -> f.call.apply f, args
