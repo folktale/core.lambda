@@ -111,8 +111,27 @@ module.exports = spec 'Core combinators' (o, spec) ->
      for-all(Int, Int, Int).satisfy (a, b, c) ->
        λ.uncurry-bind(f)([{c:c}, a, b]) is f.call({c:c}, a, b)
      .as-test!!
-       
-       
-       
-           
-               
+
+  spec 'Upon' (o) ->
+
+    o '(*) `upon` id  <=>  (*)' ->
+       id = (a) -> a
+       for-all(Int, Int).satisfy (a, b) ->
+         ((*) `λ.upon` id)(a, b)  is  a * b
+       .as-test!!
+    
+    o '((*) `upon` f) `upon` g  <=>  (*) `upon` (f . g)' ->
+       f = (* 2)
+       g = (- 1)
+       for-all(Int, Int).satisfy (a, b) ->
+         (((*) `λ.upon` f) `λ.upon` g)(a, b)  is  ((*) `λ.upon` (f . g))(a, b)
+       .as-test!!
+
+    o 'flip upon f . flip upon g  <=>  flip upon (g . f)' ->
+       f = (* 2)
+       g = (- 1)
+       for-all(Int, Int).satisfy (a, b) ->
+         h = ((λ.flip λ.upon, f) . (λ.flip λ.upon, g)) (+)
+         i = (λ.flip λ.upon, (g . f)) (+)
+         h(a, b)  is  i(a, b)
+       .as-test!!

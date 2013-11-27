@@ -111,3 +111,13 @@ export uncurry = (f) -> (args) -> f.apply this, args
 #
 # + type: (c:Object) => (a1 -> a2 -> ... -> aN -> b) -> ((c, a1, a2, ..., aN) -> b)
 export uncurry-bind = (f) -> (args) -> f.call.apply f, args
+
+
+# ## Function: upon
+#
+# Applies an unary function to both arguments of a binary function.
+#
+# Typical usage: `sort-by (compare \`upon\` first)`
+#
+# + type: (b -> b -> c) -> (a -> b) -> a -> a -> c
+export upon = (f, g, a, b) --> f (g a), (g b)
