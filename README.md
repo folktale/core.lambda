@@ -13,7 +13,14 @@ Core combinators and higher-order functions
 ## Example
 
 ```js
-( ... )
+λ = require('core.lambda')
+
+function add2(a, b) { return a + b }
+var add = λ.curry(add2)
+
+λ.compose(add(1), λ.compose( λ.uncurry(add2)
+                           , λ.constant([2, 3])))()
+// => 6
 ```
 
 
