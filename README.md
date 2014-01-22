@@ -111,6 +111,6 @@ Released under the [MIT licence](https://github.com/folktale/core.lambda/blob/ma
 [es5-shim]: https://github.com/kriskowal/es5-shim
 [docs]: http://folktale.github.io/core.lambda
 <!-- [release: https://github.com/folktale/core.lambda/releases/download/v$VERSION/core.lambda-$VERSION.tar.gz] -->
-[release]: https://github.com/folktale/core.lambda/releases/download/v1.0.0/core.lambda-1.0.0.tar.gz
+[release]: https://github.com/folktale/core.lambda/releases/download/v0.2.1/core.lambda-0.2.1.tar.gz
 <!-- [/release] -->
 
