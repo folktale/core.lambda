@@ -1,13 +1,19 @@
 bin        = $(shell npm bin)
+sjs        = $(bin)/sjs
 lsc        = $(bin)/lsc
 browserify = $(bin)/browserify
-groc       = $(bin)/groc
+jsdoc      = $(bin)/jsdoc
 uglify     = $(bin)/uglifyjs
 VERSION    = $(shell node -e 'console.log(require("./package.json").version)')
 
+lib:
+	mkdir -p lib
 
-lib: src/*.ls
-	$(lsc) -o lib -c src/*.ls
+lib/*.js: src/*.sjs
+	$(sjs) --output lib/$(basename $(notdir $<)).js \
+	       --sourcemap														  \
+	       --module lambda-chop/macros						  \
+	       $<
 
 dist:
 	mkdir -p dist
@@ -23,17 +29,15 @@ bundle: dist/core.lambda.umd.js
 
 minify: dist/core.lambda.umd.min.js
 
-compile: lib
+compile: lib/*.js
 
-documentation:
-	$(groc) --index "README.md"                                              \
-	        --out "docs/literate"                                            \
-	        src/*.ls test/*.ls test/specs/**.ls README.md
+documentation: compile
+	$(jsdoc) --configure jsdoc.conf.json
 
 clean:
 	rm -rf dist build lib
 
-test:
+test: compile
 	$(lsc) test/tap.ls
 
 package: compile documentation bundle minify

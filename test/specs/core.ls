@@ -25,7 +25,7 @@
 
 spec                     = (require 'hifive')!
 {for-all, data: { Int }} = require 'claire'
-λ                        = require '../../src/'
+λ                        = require '../../lib/'
 
 module.exports = spec 'Core combinators' (o, spec) ->
 
@@ -36,12 +36,17 @@ module.exports = spec 'Core combinators' (o, spec) ->
 
   o 'Constant: k a b <=> a' do
      for-all(Int, Int).satisfy (a, b) ->
-       (λ.constant a, b) is a
+       λ.constant(a)(b) is a
+     .as-test!
+
+  o 'Apply: apply f a <=> f a' do
+     for-all(Int).satisfy (a) ->
+       λ.apply((+ 1))(a) is (a + 1)
      .as-test!
 
   o 'Flip: flip f a b <=> f b a' do
      for-all(Int, Int).satisfy (a, b) ->
-       (λ.flip (-))(a, b) is b - a
+       (λ.flip (-))(a)(b) is b - a
      .as-test!
 
   spec 'Compose' (o) ->
@@ -52,22 +57,22 @@ module.exports = spec 'Core combinators' (o, spec) ->
 
     o 'Given `f: a → b` and `g: b → c`, then `(g . f): a → c`' do
        for-all (Int) .satisfy (a) ->
-         λ.compose(g, f)(a) == g(f(a))
+         λ.compose(g)(f)(a) == g(f(a))
        .as-test!
 
     o 'associativity: `f . (g . h)` = `(f . g) . h`' do
        for-all (Int) .satisfy (a) ->
-         λ.compose(f, λ.compose(g, h))(a) == λ.compose(λ.compose(f, g), h)(a)
+         λ.compose(f)(λ.compose(g)(h))(a) == λ.compose(λ.compose(f)(g))(h)(a)
        .as-test!
 
     o 'left identity: `id . f` = f`' do
        for-all (Int) .satisfy (a) ->
-         λ.compose(id, f)(a) == f(a)
+         λ.compose(id)(f)(a) == f(a)
        .as-test!
 
     o 'right identity: `f . id` = f`' do
        for-all (Int) .satisfy (a) ->
-         λ.compose(f, id)(a) == f(a)
+         λ.compose(f)(id)(a) == f(a)
        .as-test!
     
   o 'Curry: curry f a b <=> f (a, b)' ->
@@ -76,62 +81,45 @@ module.exports = spec 'Core combinators' (o, spec) ->
        λ.curry(f)(a)(b) is f(a, b)
      .as-test!!
 
-  o 'Curry3: curry f a b c <=> f (a, b, c)' ->
-     f = (a, b, c) -> a + b + c
-     for-all(Int, Int, Int).satisfy (a, b, c) ->
-       λ.curry3(f)(a)(b)(c) is f(a, b, c)
-     .as-test!!
-
   o 'CurryN: curry f a... <=> f [a]' ->
      f = (a, b, c, d, e) -> a + b + c + d + e
      for-all(Int, Int, Int, Int, Int).satisfy (a, b, c, d, e) ->
-       λ.curryN(5, f)(a)(b, c)(d)(e) is f(a, b, c, d, e)
+       λ.curryN(5)(f)(a)(b)(c)(d)(e) is f(a, b, c, d, e)
      .as-test!!
 
-  o 'Partial: (partial f a) b <=> f a b' ->
-     f = (a, b) -> a - b
+  o 'Uncurry: (uncurry f) (a, b) <=> f a b' ->
+     f = λ.curry (a, b) -> a + b
      for-all(Int, Int).satisfy (a, b) ->
-       λ.partial(f, a)(b) is f(a, b)
+       λ.uncurry(f)(a, b) is f(a)(b)
      .as-test!!
 
-  o 'Partial right: (partial-right f a) b <=> f b a' ->
-     f = (a, b) -> a - b
-     for-all(Int, Int).given((!=)).satisfy (a, b) ->
-       λ.partial-right(f, a)(b) is f(b, a)
-     .as-test!!
-
-  o 'Uncurry: (uncurry f) [a, b] <=> f a b' ->
-     f = (a, b) --> a + b
+  o 'Uncurry: (spread f) [a, b] <=> f a b' ->
+     f = λ.curry (a, b) -> a + b
      for-all(Int, Int).satisfy (a, b) ->
-       λ.uncurry(f)([a, b]) is f(a, b)
+       λ.spread(f)([a, b]) is f(a)(b)
      .as-test!!
 
-  o 'Uncurry bind: (uncurry-bind f) [@a, b] <=> f.call a b' ->
-     f = (a, b) --> a + b + @c
-     for-all(Int, Int, Int).satisfy (a, b, c) ->
-       λ.uncurry-bind(f)([{c:c}, a, b]) is f.call({c:c}, a, b)
-     .as-test!!
 
   spec 'Upon' (o) ->
 
     o '(*) `upon` id  <=>  (*)' ->
        id = (a) -> a
        for-all(Int, Int).satisfy (a, b) ->
-         ((*) `λ.upon` id)(a, b)  is  a * b
+         λ.upon((*))(id)(a)(b) is a * b
        .as-test!!
     
     o '((*) `upon` f) `upon` g  <=>  (*) `upon` (f . g)' ->
        f = (* 2)
        g = (- 1)
        for-all(Int, Int).satisfy (a, b) ->
-         (((*) `λ.upon` f) `λ.upon` g)(a, b)  is  ((*) `λ.upon` (f . g))(a, b)
+         λ.upon(λ.upon((*))(f))(g)(a)(b) is λ.upon((*))(f . g)(a)(b)
        .as-test!!
 
     o 'flip upon f . flip upon g  <=>  flip upon (g . f)' ->
        f = (* 2)
        g = (- 1)
        for-all(Int, Int).satisfy (a, b) ->
-         h = ((λ.flip λ.upon, f) . (λ.flip λ.upon, g)) (+)
-         i = (λ.flip λ.upon, (g . f)) (+)
-         h(a, b)  is  i(a, b)
+         h = λ.flip(λ.upon)(f) . λ.flip(λ.upon)(g)
+         i = λ.flip(λ.upon)(g . f)
+         h((+))(a)(b)  is  i((+))(a)(b)
        .as-test!!
