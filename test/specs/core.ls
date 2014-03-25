@@ -75,26 +75,21 @@ module.exports = spec 'Core combinators' (o, spec) ->
          λ.compose(f)(id)(a) == f(a)
        .as-test!
     
-  o 'Curry: curry f a b <=> f (a, b)' ->
-     f = (a, b) -> a + b
-     for-all(Int, Int).satisfy (a, b) ->
-       λ.curry(f)(a)(b) is f(a, b)
-     .as-test!!
 
-  o 'CurryN: curry f a... <=> f [a]' ->
-     f = (a, b, c, d, e) -> a + b + c + d + e
-     for-all(Int, Int, Int, Int, Int).satisfy (a, b, c, d, e) ->
-       λ.curryN(5)(f)(a)(b)(c)(d)(e) is f(a, b, c, d, e)
+  o 'Curry: curry n f a1, a2, ..., aN <=> f a1 a2 ... aN -> ...' ->
+     f = (a, b, c, d, e, x, y) -> a + b + c + d + e + x + y
+     for-all(Int, Int, Int, Int, Int, Int, Int).satisfy (a, b, c, d, e, x, y) ->
+       λ.curry(7)(f)(a)(b, c)(d, e, x)(y) is f(a, b, c, d, e, x, y)
      .as-test!!
 
   o 'Uncurry: (uncurry f) (a, b) <=> f a b' ->
-     f = λ.curry (a, b) -> a + b
+     f = λ.curry 2, (a, b) -> a + b
      for-all(Int, Int).satisfy (a, b) ->
        λ.uncurry(f)(a, b) is f(a)(b)
      .as-test!!
 
-  o 'Uncurry: (spread f) [a, b] <=> f a b' ->
-     f = λ.curry (a, b) -> a + b
+  o 'Spread: (spread f) [a, b] <=> f a b' ->
+     f = λ.curry 2, (a, b) -> a + b
      for-all(Int, Int).satisfy (a, b) ->
        λ.spread(f)([a, b]) is f(a)(b)
      .as-test!!
@@ -105,14 +100,14 @@ module.exports = spec 'Core combinators' (o, spec) ->
     o '(*) `upon` id  <=>  (*)' ->
        id = (a) -> a
        for-all(Int, Int).satisfy (a, b) ->
-         λ.upon((*))(id)(a)(b) is a * b
+         ((*) `λ.upon` id)(a)(b) is a * b
        .as-test!!
     
     o '((*) `upon` f) `upon` g  <=>  (*) `upon` (f . g)' ->
        f = (* 2)
        g = (- 1)
        for-all(Int, Int).satisfy (a, b) ->
-         λ.upon(λ.upon((*))(f))(g)(a)(b) is λ.upon((*))(f . g)(a)(b)
+         (((*) `λ.upon` f) `λ.upon` g)(a)(b) is ((*) `λ.upon` (f . g))(a)(b)
        .as-test!!
 
     o 'flip upon f . flip upon g  <=>  flip upon (g . f)' ->

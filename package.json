@@ -1,6 +1,6 @@
 {
   "name": "core.lambda",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Core combinators and higher-order functions",
   "main": "lib/index.js",
   "scripts": {
@@ -29,8 +29,6 @@
     "uglify-js": "~2.4.3",
     "claire": "~0.4.1",
     "ink-docstrap": "git://github.com/robotlolita/docstrap",
-    "jsdoc": "^3.3.0-alpha5",
-    "lambda-chop": "^0.1.4",
-    "sweet.js": "^0.5.0"
+    "jsdoc": "^3.3.0-alpha5"
   }
 }
