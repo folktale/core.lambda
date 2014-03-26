@@ -21,8 +21,15 @@ minify: dist/core.lambda.umd.min.js
 
 compile:
 
-documentation: compile
+dev-tools:
+	npm install
+
+documentation: compile dev-tools
 	$(jsdoc) --configure jsdoc.conf.json
+	ABSPATH=$(shell cd "$(dirname "$0")"; pwd) $(MAKE) clean-docs
+
+clean-docs:
+	perl -pi -e "s?$$ABSPATH/??g" ./docs/*.html
 
 clean:
 	rm -rf dist build
@@ -40,8 +47,7 @@ package: compile documentation bundle minify
 	cp LICENCE dist/core.lambda-$(VERSION)
 	cd dist && tar -czf core.lambda-$(VERSION).tar.gz core.lambda-$(VERSION)
 
-publish: clean
-	npm install
+publish: clean dev-tools
 	npm publish
 
 bump:
@@ -54,4 +60,4 @@ bump-major:
 	VERSION_BUMP=MAJOR $(MAKE) bump
 
 
-.PHONY: test
+.PHONY: test documentation bump publish package test 

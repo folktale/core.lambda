@@ -15,6 +15,9 @@
 		"theme": "cerulean",
 		"linenums": true,
 		"navType": "vertical",
-		"copyright": "© 2014 Quildreen Motta"
+		"copyright": "© 2014 Quildreen Motta",
+    "default": {
+      "outputSourceFiles": true
+    }
 	}
 }
