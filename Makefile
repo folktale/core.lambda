@@ -9,7 +9,7 @@ dist:
 	mkdir -p dist
 
 dist/core.lambda.umd.js: compile dist
-	$(browserify) lib/index.js --standalone Lambda > $@
+	$(browserify) lib/index.js --standalone folktale.core.lambda > $@
 
 dist/core.lambda.umd.min.js: dist/core.lambda.umd.js
 	$(uglify) --mangle - < $^ > $@

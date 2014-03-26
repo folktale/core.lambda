@@ -4,7 +4,7 @@ core.lambda
 [![Build Status](https://secure.travis-ci.org/folktale/core.lambda.png?branch=master)](https://travis-ci.org/folktale/core.lambda)
 [![NPM version](https://badge.fury.io/js/core.lambda.png)](http://badge.fury.io/js/core.lambda)
 [![Dependencies Status](https://david-dm.org/folktale/core.lambda.png)](https://david-dm.org/folktale/core.lambda)
-[![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
+[![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
 
 
 Core combinators and higher-order functions
@@ -57,7 +57,7 @@ require(['core.lambda'], function(Lambda) {
 ### Using without modules
 
 [Download the latest release][release], and load the `core.lambda.umd.js`
-file. The properties are exposed in the global `Lambda` object:
+file. The properties are exposed in the global `folktale.core.lambda` object:
 
 ```html
 <script src="/path/to/core.lambda.umd.js"></script>
@@ -82,12 +82,12 @@ any JavaScript environment.
 
 You can [read the documentation online][docs] or build it yourself:
 
-    $ git clone git://github.com/folktale/monads.maybe.git
-    $ cd monads.maybe
+    $ git clone git://github.com/folktale/core.lambda.git
+    $ cd core.lambda
     $ npm install
     $ make documentation
 
-Then open the file `docs/literate/index.html` in your browser.
+Then open the file `docs/index.html` in your browser.
 
 
 ## Platform support
@@ -111,6 +111,6 @@ Released under the [MIT licence](https://github.com/folktale/core.lambda/blob/ma
 [es5-shim]: https://github.com/kriskowal/es5-shim
 [docs]: http://folktale.github.io/core.lambda
 <!-- [release: https://github.com/folktale/core.lambda/releases/download/v$VERSION/core.lambda-$VERSION.tar.gz] -->
-[release]: https://github.com/folktale/core.lambda/releases/download/v0.3.0/core.lambda-0.3.0.tar.gz
+[release]: https://github.com/folktale/core.lambda/releases/download/v1.0.0/core.lambda-1.0.0.tar.gz
 <!-- [/release] -->
 
