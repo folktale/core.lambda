@@ -32,7 +32,7 @@ test: compile
 
 package: compile documentation bundle minify
 	mkdir -p dist/core.lambda-$(VERSION)
-	cp -r docs/literate dist/core.lambda-$(VERSION)/docs
+	cp -r docs dist/core.lambda-$(VERSION)
 	cp -r lib dist/core.lambda-$(VERSION)
 	cp dist/*.js dist/core.lambda-$(VERSION)
 	cp package.json dist/core.lambda-$(VERSION)
