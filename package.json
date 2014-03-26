@@ -1,6 +1,6 @@
 {
   "name": "core.lambda",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Core combinators and higher-order functions",
   "main": "lib/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "browserify": "~2.35.4",
+    "browserify": "^3.33.0",
     "LiveScript": "~1.2.0",
     "hifive-tap": "~0.1.0",
     "hifive": "~0.1.0",
